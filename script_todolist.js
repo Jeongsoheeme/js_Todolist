@@ -12,8 +12,10 @@
 
 let taskinput = document.getElementById("task_input");
 let addbutton = document.getElementById("add_button");
-let tabs = document.querySelectorAll(".task_tabs div")
-let tasklist = []
+let tabs = document.querySelectorAll(".task_tabs div");
+let tasklist = [];
+let filterlist = [];
+let mode = 'all';
 addbutton.addEventListener("click",addtask);
 for(let i=1;i<tabs.length;i++){
   tabs[i].addEventListener("click",function(evnet){
@@ -32,17 +34,31 @@ function addtask(){
 }
 
 function render(){
+  let list = [];
+
+  document.getElementById("underline").style.width =
+  event.target.offsetWidth + "px";
+  document.getElementById("underline").style.top =
+  event.target.offsettop + event.target.offsetHeight + "px";
+  document.getElementById("underline").style.left =
+  event.target.offsetLeft + "px";
+  
+  if (mode == "all"){
+    list = tasklist;
+  }else if(mode == "ongoing" || mode == "done"){
+    list = filterlist;
+  }
   let result = '';
-  for(let i = 0; i<tasklist.length;i++){
-    if(tasklist[i].iscomplete == true){
+  for(let i = 0; i<list.length;i++){
+    if(list[i].iscomplete == true){
       result+=`
       <div class="task">
         <div class="task-done">
-          ${tasklist[i].taskcontents}
+          ${list[i].taskcontents}
         </div>
         <div>
-          <button onclick="togglecomplete('${tasklist[i].id}')">check</button>
-          <button onclick="deletetask('${tasklist[i].id}')">delete</button>
+          <button onclick="togglecomplete('${list[i].id}')">check</button>
+          <button onclick="deletetask('${list[i].id}')">delete</button>
         </div>
       </div>
       `
@@ -50,11 +66,11 @@ function render(){
       result += `
     <div class="task">
       <div>
-        ${tasklist[i].taskcontents}
+        ${list[i].taskcontents}
       </div>
       <div>
-        <button onclick="togglecomplete('${tasklist[i].id}')">check</button>
-        <button onclick="deletetask('${tasklist[i].id}')">delete</button>
+        <button onclick="togglecomplete('${list[i].id}')">check</button>
+        <button onclick="deletetask('${list[i].id}')">delete</button>
       </div>
     </div>
     `
@@ -86,7 +102,29 @@ function deletetask(id){
 }
 
 function filter(event){
-  console.log("filter 클릭됨",event.target.id);
+  mode = event.target.id;
+  filterlist = [];
+  
+  document.getElementById("underline");
+  if(mode == "all"){
+    render();
+  }else if(mode == "ongoing"){
+    for(let i = 0; i<tasklist.length;i++){
+      if(tasklist[i].iscomplete == false){
+        filterlist.push(tasklist[i]);
+      }
+    }
+    
+    render();
+  }else if(mode == "done"){
+    for(let i = 0; i<tasklist.length;i++){
+      if(tasklist[i].iscomplete == false){
+        filterlist.push(tasklist[i]);
+      }
+    }
+    render();
+  }
+  console.log(filterlist);
 }
 
 function randomid(){

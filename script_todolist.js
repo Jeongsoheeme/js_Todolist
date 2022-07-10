@@ -12,9 +12,14 @@
 
 let taskinput = document.getElementById("task_input");
 let addbutton = document.getElementById("add_button");
+let tabs = document.querySelectorAll(".task_tabs div")
 let tasklist = []
 addbutton.addEventListener("click",addtask);
-
+for(let i=1;i<tabs.length;i++){
+  tabs[i].addEventListener("click",function(evnet){
+    filter(event);
+  });
+}
 function addtask(){
   let task = {
     id: randomid(),
@@ -80,6 +85,9 @@ function deletetask(id){
   render();
 }
 
+function filter(event){
+  console.log("filter 클릭됨",event.target.id);
+}
 
 function randomid(){
   return '_' + Math.random().toString(36).substr(2, 9);
